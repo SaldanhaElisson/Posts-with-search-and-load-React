@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import './App.css'
+import {PostCard} from './components/PostCard'
 
 
 class App extends Component{
@@ -47,13 +48,18 @@ return(
      <div className = "posts">
 
      {posts.map(post =>(
-       <div className="post">
-         <img src={post.cover} alt = {post.title}/>
-       <div key = {post.id} className="post-content">
-         <h1>{post.title}</h1>
-         <p>{post.body}</p>
-       </div>
-     </div>  
+
+       // alguns components tem child e outros não, nesse exemlo temos 
+       // também podemos passar atributos que vai receber no objeto props que pode ser capturado no component
+       // nesse caso vou passar os dados do post 
+       <PostCard atribut="lala"
+        key ={post.id}
+        title={post.title}
+        body = {post.body}
+        id = {post.id}
+        cover = {post.cover}
+
+        />
      ))}
     
      </div>
