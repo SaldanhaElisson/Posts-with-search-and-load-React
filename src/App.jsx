@@ -1,81 +1,67 @@
 import { Component } from 'react'
+import './App.css'
 
 
 class App extends Component{
 
   // simulando dados
   state = {
-    counter: 0,
-    posts:[
-      {
-        id:1,
-        tite: 'O titulo 1',
-        body: 'Corpo 1'
-      },
-      {
-        id:2,
-        tite: 'O titulo 2',
-        body: 'Corpo 2'
-      },
-      {
-        id:3,
-        tite: 'O titulo 2',
-        body: 'Corpo 2'
-      },
-    ]
+    posts:[]
   }
-  setTimeoutUpdate = null;
-
-  // vamos utilizar essa função para buscar dados
+  // utilizaremos fetch para fazer as chamadas
   componentDidMount(){
-    this.handletimeOut()
+   this.loadPosts()
   }
 
-  // toda vez que o component atualizar a função será executado
-  componentDidUpdate(){
-      this.handletimeOut()
+  loadPosts = async () => {
+
+    // o PostResponde está fazer uma requisição
+    const postsResponse = fetch('https://jsonplaceholder.typicode.com/posts');
+    const phtosoResponde =  fetch('https://jsonplaceholder.typicode.com/photos')
+
+    // o postsResponde vai receber arrays.Ele vai esperar receber todas as respostas do postResponde
+    const [posts, photos] = await Promise.all([postsResponse, phtosoResponde]);
+
+    // depois vamos transforma esse arrays e, json
+    const postsJson = await posts.json();
+    const photosJson = await photos.json();
+
+    //fazendo zip de dois json's
+    // vou pegar o array com meno indice
+    // irei pegar os index desse menor array e irei relacionar com o maior array
+    const postsAndPhotos = postsJson.map((post, index) => {
+      return{...post, cover: photosJson[index].url}
+    })
+
+    // e por fim vamos passar esses json's para os estados
+    this.setState({posts: postsAndPhotos})
+
+
   }
-
-  // com essas duas funções pode dá erro, deixar um "lixo" antes de redenrizar outro component
-  // por exemplo a função timeOut, quando o component for construido uma vez a função DidMount
-  // irá ser adicionada, e depois o update e assim entrando em um loop infinito
-  // as vezes a função que construi um component pode ser executado e o setTimeOut ainda está ativado
-  // esse setTImeOut pode ser o lixo da nossa aplicação então precisamos resetar ele antes da função 
-  // DidUpdate ser executado dnv e vamos o seguinte
-
-  componentWillUnmount(){
-    clearTimeout(this.setTimeoutUpdate)
-  }
-
-  handletimeOut(){
-    const {posts, counter} = this.state
-    posts[0].title = 'O titulo mudou'
-      setTimeout(() =>{
-        this.setState({post, counter: counter + 1})
-      }, 2000)
-  }
-
-
 
   render(){
-    const {posts, counter} = this.state;
-    return(
-      <>
-         <h1>{counter}</h1>
-        {/* Quando tiver uma array e quisermos criar um elementos para cada dado podemos utilizar .map */}
-        {/* Quando temos varios elementos iguais criado na tela precisas colocar
-          uma 'chave unica': Key = "[alguém unico]" nesse camos vamos utilizar o id do objeto
-        */}
-        {posts.map(post => ( 
-        <>
-        <h1 key={post.id}>{post.tite}</h1>
-        <p>{post.body} </p> 
-        </>
-        
-        
-        ))}
-      </>
-    )
-  }
-}
+    const {posts} = this.state;
+return(
+  <>
+   <section className="container">
+     <div className = "posts">
+
+     {posts.map(post =>(
+       <div className="post">
+         <img src={post.cover} alt = {post.title}/>
+       <div key = {post.id} className="post-content">
+         <h1>{post.title}</h1>
+         <p>{post.body}</p>
+       </div>
+     </div>  
+     ))}
+    
+     </div>
+   </section>
+  </>
+)
+}}
+
 export default App
+
+
