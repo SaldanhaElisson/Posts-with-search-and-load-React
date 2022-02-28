@@ -13,8 +13,6 @@
   gap: 30px;
 }
 
-
-
 .post {
   background-color: #FFF;
   box-shadow: 0 0 10x rgba(0, 0, 0, 0.1);
@@ -31,4 +29,12 @@
 
 .post-content{
   padding: 30px;
+}
+
+.search-container {
+  margin-bottom: 30px;
+}
+
+.search-container h1{
+  margin-bottom: 30px;
 }
